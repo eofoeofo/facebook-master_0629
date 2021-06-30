@@ -3,12 +3,13 @@ package com.koreait.facebook.user;
 import com.koreait.facebook.common.EmailService;
 import com.koreait.facebook.common.MyFileUtils;
 import com.koreait.facebook.common.MySecurityUtils;
+import com.koreait.facebook.feed.FeedMapper;
+import com.koreait.facebook.feed.model.FeedDTO;
+import com.koreait.facebook.feed.model.FeedDomain2;
 import com.koreait.facebook.security.IAuthenticationFacade;
 import com.koreait.facebook.user.model.UserEntity;
 import com.koreait.facebook.user.model.UserProfileEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +40,9 @@ public class UserService {
 
     @Autowired
     private UserProfileMapper profileMapper;
+
+    @Autowired
+    private FeedMapper feedMapper;
 
     public int join(UserEntity param) {
         String authCd = secUtils.getRandomDigit(5);
@@ -108,5 +112,9 @@ public class UserService {
         res.put("result", result);
         res.put("img", param.getImg());
         return res;
+    }
+    public List<FeedDomain2> selFeedList2(FeedDTO param) {
+        param.setIuser(auth.getLoginUserPk());
+        return mapper.selFeedList2(param);
     }
 }
