@@ -1,8 +1,7 @@
 package com.koreait.facebook.feed;
 
 import com.koreait.facebook.common.MyConst;
-import com.koreait.facebook.feed.model.FeedDomain;
-import com.koreait.facebook.feed.model.FeedEntity;
+import com.koreait.facebook.feed.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +15,8 @@ import java.util.Map;
 @RequestMapping("/feed")
 public class FeedController {
 
-    @Autowired
-    private FeedService service;
-
-    @Autowired
-    private MyConst myConst;
+    @Autowired private FeedService service;
+    @Autowired private MyConst myConst;
 
     @GetMapping("/home")
     public void home() {}
@@ -31,9 +27,8 @@ public class FeedController {
     @ResponseBody
     @PostMapping("/reg")
     public Map<String, Integer> reg(MultipartFile[] imgArr, FeedEntity param) {
-        Map<String, Integer> res = new HashMap<>();
-        System.out.println(param);
-        res.put(myConst.RESULT,service.reg(imgArr,param));
+        Map<String, Integer> res = new HashMap();
+        res.put(myConst.RESULT, service.reg(imgArr, param));
         return res;
     }
 
@@ -41,5 +36,19 @@ public class FeedController {
     @GetMapping("/list")
     public List<FeedDomain> selFeedList() {
         return service.selFeedList();
+    }
+
+    @ResponseBody
+    @GetMapping("/list2")
+    public List<FeedDomain2> selFeedList2(FeedDTO param) {
+        return service.selFeedList2(param);
+    }
+
+    @ResponseBody
+    @GetMapping("/fav")
+    public int feedFavProc(FeedFavEntity param, int type) { // type : 1 insert / type : 0 delete
+        System.out.println("param : " + param);
+        System.out.println("type : " + type);
+        return service.feedFavProc(param,type);
     }
 }
