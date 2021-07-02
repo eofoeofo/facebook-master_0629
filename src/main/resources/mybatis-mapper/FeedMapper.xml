@@ -4,7 +4,11 @@
 
     <resultMap id="FeedDomainMap" type="FeedDomain2">
         <result property="ifeed" column="ifeed"></result>
+    <!--컬럼명과 멤버필드명이 다를 때,매핑시켜주는 기능 property=멤버필드명 column=컬럼명-->
+        <association property="cmt" column="ifeed" select="selFeedCmt"></association>
         <collection property="imgList" column="ifeed" select="selFeedImgList"></collection>
+    <!--selFeedImgList의 결과물을 imgList에 넣어줌-->
+    <!--1개를 가져올 땐 collection, 여러개는 association-->
     </resultMap>
 
     <insert id="insFeed" useGeneratedKeys="true" keyProperty="ifeed">
@@ -85,4 +89,51 @@
         WHERE ifeed = #{ifeed}
           AND iuser = #{iuser}
     </delete>
+
+    <select id="selFeedCmt" resultType="FeedCmtDomain"># 댓글 한줄 보여줄 때
+    SELECT A.*,
+           COUNT(A.icmt) - 1 AS isMore
+    FROM
+        (
+    SELECT A.icmt
+         , A.cmt
+         , A.regdt
+         , A.ifeed
+         , B.iuser
+         , B.nm AS writer
+         , B.mainProfile AS writerProfile
+           FROM t_feed_cmt A
+         INNER JOIN t_user B
+      ON A.iuser = B.iuser
+   WHERE A.ifeed = #{ifeed}
+   ORDER BY icmt ASC
+            LIMIT 2
+            ) A
+    GROUP BY A.ifeed
+    </select>
+    <select id="selFeedCmtList" resultType="FeedCmtDomain"># 댓글 여러 줄 보여줄 때
+    SELECT A.icmt
+         , A.cmt
+         , A.regdt
+         , B.iuser
+         , B.nm AS writer
+         , B.mainProfile AS writerProfile
+      FROM t_feed_cmt A
+    INNER JOIN t_user B
+    ON    A.iuser = B.iuser
+    WHERE A.ifeed = #{ifeed}
+    ORDER BY icmt ASC
+    LIMIT 1, 20000;
+    </select>
+
+    <insert id="insFeedCmt">
+        INSERT INTO t_feed_cmt
+        (ifeed
+        , iuser
+        , cmt)
+        VALUES
+        ( ${ifeed}
+        , ${iuser}
+        , #{cmt})
+    </insert>
 </mapper>

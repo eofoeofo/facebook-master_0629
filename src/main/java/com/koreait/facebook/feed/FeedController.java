@@ -13,9 +13,9 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/feed")
-public class FeedController {
+public class  FeedController {
 
-    @Autowired private FeedService service;
+    @Autowired private FeedService feedService;
     @Autowired private MyConst myConst;
 
     @GetMapping("/home")
@@ -28,20 +28,20 @@ public class FeedController {
     @PostMapping("/reg")
     public Map<String, Integer> reg(MultipartFile[] imgArr, FeedEntity param) {
         Map<String, Integer> res = new HashMap();
-        res.put(myConst.RESULT, service.reg(imgArr, param));
+        res.put(myConst.RESULT, feedService.reg(imgArr, param));
         return res;
     }
 
     @ResponseBody
     @GetMapping("/list")
     public List<FeedDomain> selFeedList() {
-        return service.selFeedList();
+        return feedService.selFeedList();
     }
 
     @ResponseBody
     @GetMapping("/list2")
     public List<FeedDomain2> selFeedList2(FeedDTO param) {
-        return service.selFeedList2(param);
+        return feedService.selFeedList2(param);
     }
 
     @ResponseBody
@@ -49,6 +49,18 @@ public class FeedController {
     public int feedFavProc(FeedFavEntity param, int type) { // type : 1 insert / type : 0 delete
         System.out.println("param : " + param);
         System.out.println("type : " + type);
-        return service.feedFavProc(param,type);
+        return feedService.feedFavProc(param,type);
+    }
+
+    @ResponseBody
+    @PostMapping("/cmt")
+    public int insFeedCmt(@RequestBody FeedCmtEntity param) {
+        return feedService.insFeedCmt(param);
+    }
+
+    @ResponseBody
+    @GetMapping("/cmt")
+    public List<FeedCmtDomain> cmtList(FeedCmtEntity param) {
+        return feedService.selFeedCmtList(param);
     }
 }

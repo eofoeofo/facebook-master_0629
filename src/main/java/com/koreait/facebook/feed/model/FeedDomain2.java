@@ -15,4 +15,5 @@ public class FeedDomain2 extends FeedEntity {
     private int favCnt;
     private int isFav;
     private List<FeedImgEntity> imgList;
+    private FeedCmtDomain cmt; // 댓글을 여러개 보여줄꺼였으면 List로 처리
 }
