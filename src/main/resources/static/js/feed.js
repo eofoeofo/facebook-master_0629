@@ -194,6 +194,7 @@ const feedObj = {
                                 break;
                             case 1:
                                 cmtInPut.value = '';
+                                this.makeCmtItem(myJson);
                                 break;
                         }
                     })
