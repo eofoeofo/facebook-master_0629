@@ -169,7 +169,7 @@ const feedObj = {
             cmtBtn.addEventListener('click', () => {
                 const cmt = cmtInPut.value;
                 if(cmt.length === 0) {
-                    alert('댓글 내용을 작성해 주세요.');
+                    alert('댓글 내용을 작성해 주세요.!');
                     return;
                 }
                 const param = {
