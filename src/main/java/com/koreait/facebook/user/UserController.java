@@ -49,9 +49,14 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public void profile(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        UserEntity loginUser = userDetails.getUser();
-        model.addAttribute(myConst.PROFILE_LIST, service.selUserProfileList(loginUser));
+    public void profile(Model model, UserEntity param, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        System.out.println(param);
+        // iuser가 0은 본인 일 때,
+        if(param.getIuser() == 0) {
+            param.setIuser(userDetails.getUser().getIuser());
+        }
+        model.addAttribute(myConst.PROFILE, service.selUserProfile(param));
+        model.addAttribute(myConst.PROFILE_LIST, service.selUserProfileList(param));
     }
 
     @PostMapping("/profileImg")

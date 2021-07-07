@@ -23,9 +23,11 @@ const feedObj = {
     itemLength: 0,
     currentPage: 1,
     url: '',
+    iuser: 0,
     swiper: null,
     containerElem: document.querySelector('#feedContainer'),
     loadingElem: document.querySelector('.loading'),
+
     makeFeedList: function (data) {
         if (data.length == 0) {
             return;
@@ -156,6 +158,11 @@ const feedObj = {
             const cmtInPut = document.createElement('input');
             cmtInPut.type = 'text';
             cmtInPut.placeholder = '댓글을 입력하세요..';
+            cmtInPut.addEventListener('keyup', (e) => {
+                if(e.key === 'Enter') {
+                    cmtBtn.click();
+                }
+            });
 
             if(item.cmt != null) { // 댓글 있는 상황
                 const cmtItemContainerDiv = this.makeCmtItem(item.cmt);
@@ -193,14 +200,22 @@ const feedObj = {
                                 alert('댓글 작성에 실패 하셨습니다.');
                                 break;
                             case 1:
+                                // 댓글 추가
+                                const globalConstElem = document.querySelector('#globalConst');
+                                const param = { ...globalConstElem.dataset }
+                                param.cmt = cmtInPut.value;
+
+                                const cmtItemDiv = this.makeCmtItem(param);
+                                cmtListDiv.append(cmtItemDiv);
+
                                 cmtInPut.value = '';
                                 this.makeCmtItem(myJson);
                                 break;
                         }
                     })
-                .catch(err => {
-                    console.log(err); // 통신실패
-                });
+                    .catch(err => {
+                        console.log(err); // 통신실패
+                    });
             });
 
             cmtFormDiv.append(cmtInPut);
@@ -234,7 +249,7 @@ const feedObj = {
     getFeedList: function (page) {
         this.showLoading();
 
-        fetch(`${this.url}?page=${page}&limit=${this.limit}`)
+        fetch(`${this.url}?iuserForMyFeed=${this.iuser}&page=${page}&limit=${this.limit}`)
             .then(res => res.json())
             .then(myJson => {
                 console.log(myJson);
@@ -246,7 +261,7 @@ const feedObj = {
             this.hideLoading();
         });
     },
-    makeCmtItem: function ({iuser, writerProfile, writer, cmt}) {
+    makeCmtItem: function ({iuser, writerProfile, writer, cmt, regdt}) {
         const cmtItemContainerDiv = document.createElement('div');
         cmtItemContainerDiv.className = 'cmtItemCont';
 
@@ -262,8 +277,10 @@ const feedObj = {
 
         // 댓글
         const cmtItemCtntDiv = document.createElement('div');
+
         cmtItemCtntDiv.className = 'cmtItemCtnt';
-        cmtItemCtntDiv.innerHTML = `<div>${writer}</div><div>${cmt}</div>`;
+        cmtItemCtntDiv.innerHTML = `<div>${writer}</div><div class="cmtItemMain"><div>${cmt}</div><div class="cmtItemRegdt">${regdt}</div></div>`;
+
         cmtItemContainerDiv.append(cmtItemCtntDiv);
 
         return cmtItemContainerDiv;

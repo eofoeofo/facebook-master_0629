@@ -2,6 +2,7 @@ package com.koreait.facebook.security;
 
 import com.koreait.facebook.user.model.UserEntity;
 import lombok.Getter;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;

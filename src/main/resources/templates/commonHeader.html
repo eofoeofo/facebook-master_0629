@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:data="http://www.w3.org/1999/xhtml">
 
   <header th:fragment="header">
+<!--    SecurityContextHolder에 security의 최종 값이 담긴다-->
+<!--#authentication은 SecurityContextHolder을 뜻하며 .getPrincipal은 UserDetails이다.-->
+<!--    결국 auth= userEntity를 가져오는것. -->
+    <span id="globalConst" sec:authorize="isAuthenticated()" th:with="auth=${#authentication.getPrincipal().getUser()}" th:attr="data-iuser=${auth.iuser},data-writer=${auth.nm}, data-writer-profile=${auth.mainProfile}"</span>
+  <!--iuser,nm,mainProfile 정보를 어느 곳에서나 사용할 수 있게 Header에 각인-->
     <nav>
       <div class="header__left">
         <a th:href="@{/feed/home}">
@@ -24,10 +29,10 @@
           <li><a th:href="@{/user/login}">로그인</a></li>
         </ul>
 
-        <ul class="menus" sec:authorize="isAuthenticated()">
+        <ul class="menus" sec:authorize="isAuthenticated()" th:with="auth=${#authentication.getPrincipal().getUser()}">
           <li>
               <a th:href="@{/user/profile}">
-                <span class="span__profile" th:with="auth=${#authentication.getPrincipal().getUser()}">
+                <span class="span__profile">
                    <img class="profile w50" th:if="${auth.mainProfile != null}" th:src="@{/pic/profile/{iuser}/{img}(iuser=${auth.iuser}, img=${auth.mainProfile})}">
                   <span th:text="${auth.nm}"></span>
                 </span>

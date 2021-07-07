@@ -1,11 +1,12 @@
 package com.koreait.facebook.user.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.ibatis.type.Alias;
 
-@Getter
-@Setter
+@Data
+
 public class UserEntity {
     private int iuser;
     private String email;

@@ -39,9 +39,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
 
         http.formLogin()
+
                 .loginPage("/user/login")
                 .usernameParameter("email")
+//                th에서 email로 받겠다, 기본값은 username
                 .passwordParameter("pw")
+//                th에서 pw로 받겠다, 기본값은 password
                 .defaultSuccessUrl("/feed/home");
 
         http.logout()
