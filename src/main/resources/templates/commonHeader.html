@@ -7,7 +7,7 @@
 <!--    SecurityContextHolder에 security의 최종 값이 담긴다-->
 <!--#authentication은 SecurityContextHolder을 뜻하며 .getPrincipal은 UserDetails이다.-->
 <!--    결국 auth= userEntity를 가져오는것. -->
-    <span id="globalConst" sec:authorize="isAuthenticated()" th:with="auth=${#authentication.getPrincipal().getUser()}" th:attr="data-iuser=${auth.iuser},data-writer=${auth.nm}, data-writer-profile=${auth.mainProfile}"</span>
+    <span id="globalConst" sec:authorize="isAuthenticated()" th:with="auth=${#authentication.getPrincipal().getUser()}" th:attr="data-iuser=${auth.iuser},data-writer=${auth.nm}, data-writer-profile=${auth.mainProfile}, data-regdt=${auth.regdt}"</span>
   <!--iuser,nm,mainProfile 정보를 어느 곳에서나 사용할 수 있게 Header에 각인-->
     <nav>
       <div class="header__left">

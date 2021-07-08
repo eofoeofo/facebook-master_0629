@@ -24,9 +24,33 @@
             </div>
         </form>
 
-        <div id="flexContainer" th:if="${profile.mainProfile != null}">
+        <div id="flexContainer">
             <div>
-                <img class="profile w200 pointer"
+                <table>
+                    <tr>
+                        <td>게시물</td>
+                        <td th:text="${profile.cntFeed}"></td>
+                        <td>팔로워</td>
+                        <td th:text="${profile.cntFollower}"></td>
+                        <td>팔로우</td>
+                        <td th:text="${profile.cntFollow}"></td>
+                        <td th:unless="${profile.iuser == auth.iuser}">
+                            <th:block th:if="${profile.isMeFollowYou eq 1}">
+                                <input type="button" value="팔로우 취소">
+                            </th:block>
+                            <th:block th:unless="${profile.isMeFollowYou eq 1}">
+
+                                <th:block th:if="${profile.isYouFollowMe eq 1}">
+                                    <input type="button" value="맞팔로우">
+                                </th:block>
+                                <th:block th:unless="${profile.isYouFollowMe eq 1}">
+                                    <input type="button" value="팔로우">
+                                </th:block>
+                            </th:block>
+                        </td>
+                    </tr>
+                </table>
+                <img class="profile w200 pointer" th:if="${profile.mainProfile != null}"
                      th:src="@{/pic/profile/{iuser}/{img}(iuser=${profile.iuser}, img=${profile.mainProfile})}">
                 <table>
                     <tr>
