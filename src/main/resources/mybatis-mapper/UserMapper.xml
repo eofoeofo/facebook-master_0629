@@ -53,5 +53,26 @@
         </selectKey>
     </update>
 
+    <insert id="insUserFollow">
+        INSERT INTO t_user_follow
+        (iuserMe, iuserYou)
+        VALUES
+        (${iuserMe},${iuserYou})
+    </insert>
+
+    <select id="selUserFollow" resultType="UserFollowEntity">
+        SELECT iuserMe
+             , iuserYou
+             , regdt
+          FROM t_user_follow
+         WHERE iuserMe  = ${iuserYou}
+           AND iuserYou = ${iuesrMe}
+    </select>
+
+    <delete id="delUserFollow">
+        DELETE FROM t_user_follow
+         WHERE iuserMe  = ${iuserMe}
+          AND  iuserYou = ${iuserYou}
+    </delete>
 
 </mapper>

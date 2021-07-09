@@ -3,6 +3,7 @@ package com.koreait.facebook.user;
 import com.koreait.facebook.feed.model.FeedDTO;
 import com.koreait.facebook.feed.model.FeedDomain2;
 import com.koreait.facebook.user.model.UserEntity;
+import com.koreait.facebook.user.model.UserFollowEntity;
 import com.koreait.facebook.user.model.UserProfileEntity;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -16,4 +17,8 @@ public interface UserMapper {
     int updUser(UserEntity param);
     int updUserMainProfile(UserProfileEntity param);
     List<FeedDomain2> selFeedList2(FeedDTO param);
+
+    int insUserFollow(UserFollowEntity param);
+    UserFollowEntity selUserFollow(UserFollowEntity param);
+    int delUserFollow(UserFollowEntity param);
 }
