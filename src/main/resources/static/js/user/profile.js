@@ -74,41 +74,51 @@ if(modalCloseElem) {
         //location.reload();
     });
 }
+// 팔로우 처리
+// type: 0 팔로우 처리
+// type: 1 팔로우 취소
+function followProc(type,iuserYou,btnElem) {
+    const init = {}
+    const param = { iuserYou };
+    let queryString = '';
+    switch (type) {
+        case 0:
+            init.method = 'POST';
+            init.headers = { 'Content-Type': 'application/json' };
+            init.body = JSON.stringify(param);
+            break;
+        case 1:
+            init.method = 'DELETE';
+            queryString = `?iuserYou=${iuserYou}`;
+            break;
+    }
+
+    fetch('follow' + queryString, init)
+        .then(res => res.json())
+        .then(myJson => {
+            console.log(myJson);
+            if(myJson.result === 1) {
+                let buttnNm = '팔로우 취소';
+                if(btnElem.dataset.follow === '1') {
+                    if(myJson.youFollowMe == null) { buttnNm = '팔로우'; }
+                    else { buttnNm = '맞팔로우'; }
+                }
+                btnElem.classList.toggle('instaBtnEnable');
+                btnElem.value = buttnNm;
+                btnElem.dataset.follow = 1 - btnElem.dataset.follow;
+            } else {
+                alert('에러가 발생하였습니다.');
+            }
+        });
+}
 
 if(btnFollowElem) {
     btnFollowElem.addEventListener('click', () => {
-        const param = { iuserYou: localConstElem.dataset.iuser };
-        const init = {}
-        let queryString = '';
-        switch(btnFollowElem.dataset.follow) {
-            case '0': //no팔로우 > 팔로우
-                init.method = 'POST';
-                init.headers = { 'Content-Type': 'application/json' };
-                init.body = JSON.stringify(param);
-                break;
-            case '1': //팔로우 > 팔로우취소
-                init.method = 'DELETE';
-                queryString = `?iuserYou=${param.iuserYou}`;
-                break;
-        }
 
-        fetch('follow' + queryString, init)
-            .then(res => res.json())
-            .then(myJson => {
-                console.log(myJson);
-                if(myJson.result === 1) {
-                    let buttnNm = '팔로우 취소';
-                    if(btnFollowElem.dataset.follow === '1') {
-                        if(myJson.youFollowMe == null) { buttnNm = '팔로우'; }
-                        else { buttnNm = '맞팔로우'; }
-                    }
-                    btnFollowElem.classList.toggle('instaBtnEnable');
-                    btnFollowElem.value = buttnNm;
-                    btnFollowElem.dataset.follow = 1 - btnFollowElem.dataset.follow;
-                } else {
-                    alert('에러가 발생하였습니다.');
-                }
-            });
+        const follow = parseInt(btnFollowElem.dataset.follow);
+        const iuser = localConstElem.dataset.iuser;
+
+        followProc(follow, iuser, btnFollowElem);
     });
 }
 
@@ -125,6 +135,18 @@ if(followerElemArr) {
             modalFollowTitleElem.innerText = '팔로워';
             modalFollowElem.classList.remove('hide');
             modalFollowItemConElem.innerHTML = '';
+
+            // 프로필 사용자를 팔로우한 사람들 리스트
+            fetch(`getFollowerList?iuserYou=${localConstElem.dataset.iuser}`)
+                .then(res => res.json())
+                .then(myJson => {
+                    if(myJson.length > 0) {
+                        myJson.forEach(item => {
+                            const cont = makeFollowItem(item);
+                            modalFollowItemConElem.append(cont);
+                        });
+                    }
+                });
         }) ;
     });
 }
@@ -166,19 +188,35 @@ function makeFollowItem(item) {
     cont.className = 'follow-item';
     const img = document.createElement('img');
     const name = document.createElement('div');
+    const nmText = document.createElement('span');
     const btn = document.createElement('input');
-    name.innerText = item.nm;
+    nmText.innerText = item.nm;
+    nmText.className = 'pointer';
+    name.append(nmText);
+    name.addEventListener('click', ()=> {
+        moveToProfile(item.iuser); // feed.js의 메소드
+    })
     img.src = `/pic/profile/${item.iuser}/${item.mainProfile}`;
-    img.className = 'profile wh30';
+    img.className = 'profile wh30 pointer';
     img.onerror = () => {
         img.style.visibility = 'hidden';
     }
+    img.addEventListener('click', ()=> {
+        moveToProfile(item.iuser); // feed.js의 메소드
+    })
+    btn.className = 'pointer';
     btn.className = 'instaBtn';
+    btn.dataset.follow = '0';
+    btn.addEventListener('click', ()=> {
+        const follow = parseInt(btn.dataset.follow);
+        followProc(follow,item.iuser,btn);
+    });
     cont.append(img);
     cont.append(name);
     if(parseInt(loginIuser) !== item.iuser) { // 나 자신일 때는 버튼 생성 하지않음
         btn.type  = 'button';
         if(item.isMeFollowYou) {
+            btn.dataset.follow = '1';
             btn.value = '팔로우 취소';
         } else {
             btn.classList.add('instaBtnEnable');

@@ -122,9 +122,11 @@ public class UserService {
     public Map<String, Object> delUserFollow(UserFollowEntity param) {
         param.setIuserMe(auth.getLoginUserPk());
         int result = mapper.delUserFollow(param);
+        System.out.println("service Me "+param.getIuserMe());
 
-        Map<String, Object> res = new HashMap<>();
+        Map<String, Object> res = new HashMap();
         res.put(myConst.RESULT, result);
+        System.out.println("result : " + result);
         if(result == 1) {
             // 상대방이 나를 팔로우 하고 있는지 확인
             UserFollowEntity param2 = new UserFollowEntity();
@@ -138,8 +140,15 @@ public class UserService {
 
         return res;
     }
+    // 팔로우 리스트
     public List<UserDomain> selUserFollowList(UserFollowEntity param) {
         param.setIuserMe(auth.getLoginUserPk());
         return mapper.selUserFollowList(param);
     }
+    // 팔로워 리스트
+    public List<UserDomain> selUserFollowerList(UserFollowEntity param) {
+        param.setIuserMe(auth.getLoginUserPk());
+        return mapper.selUserFollowerList(param);
+    }
+
 }

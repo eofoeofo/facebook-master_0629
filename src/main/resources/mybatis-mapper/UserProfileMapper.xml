@@ -22,11 +22,11 @@
             , (SELECT COUNT(iuserMe)
               FROM  t_user_follow
               WHERE iuserMe   = ${youIuser}
-              AND   iuserYou  = ${meIuser}) AS FollowForMe
+              AND   iuserYou  = ${meIuser}) AS isYouFollowMe
             , (SELECT COUNT(iuserMe)
               FROM  t_user_follow
               WHERE iuserMe  = ${meIuser}
-              AND   iuserYou = ${youIuser}) AS FollowForYou
+              AND   iuserYou = ${youIuser}) AS isMeFollowYou
         FROM t_user A
  LEFT JOIN (
             SELECT iuser
